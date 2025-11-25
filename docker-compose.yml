@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Layanan PHP-FPM (menggunakan Dockerfile di atas)
+  app:
+    build:
+      context: . # Asumsi Dockerfile berada di root proyek
+      dockerfile: Dockerfile
+    image: laravel-app:latest
+    container_name: laravel_app
+    restart: unless-stopped
+    # Mount volume untuk kode sumber dan data persisten (optional)
+    volumes:
+      - .:/var/www/html
+      # Pastikan storage/logs/ dan cache/ memiliki persistensi
+      - /var/www/html/vendor
+    
+  # Layanan Web Server (menggunakan Nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80" # Map port 80 host ke port 80 container
+    volumes:
+      - .:/var/www/html:ro # Hanya baca untuk kode sumber
+      # Salin konfigurasi Nginx kustom Anda
+      - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app # Pastikan layanan 'app' (PHP-FPM) sudah berjalan
