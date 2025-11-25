@@ -1,5 +1,16 @@
+# File/Folder yang sudah ada di file Anda
 .git
 .gitignore
 .env
 vendor/
 node_modules/
+
+# Tambahan untuk optimasi Laravel dan Docker
+/storage
+/bootstrap/cache
+/public/build
+
+# File spesifik IDE atau OS
+.vscode
+.idea
+.DS_Store
