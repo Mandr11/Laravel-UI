@@ -21,8 +21,15 @@ RUN npm run build
 
 # ----------------------------------------
 # STAGE 2: Install PHP Dependencies (Composer)
+# Menggunakan PHP 8.2 CLI (sesuai runtime dan kompatibel dengan composer.lock)
 # ----------------------------------------
-FROM composer:2-php8.4 AS composer_installer
+FROM php:8.2-cli-alpine AS composer_installer
+
+# Instal dependensi sistem yang dibutuhkan Composer (seperti git, unzip, libzip-dev)
+RUN apk update && apk add --no-cache git unzip libzip-dev
+
+# Instal Composer secara global
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Atur direktori kerja di dalam container
 WORKDIR /var/www/html
@@ -31,7 +38,6 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Instal dependensi PHP (hanya untuk produksi)
-# Flag --no-dev, --optimize-autoloader, dan --prefer-dist membantu menjaga image akhir tetap ramping.
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # ----------------------------------------
