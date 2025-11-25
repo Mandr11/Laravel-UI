@@ -22,7 +22,7 @@ RUN npm run build
 # ----------------------------------------
 # STAGE 2: Install PHP Dependencies (Composer)
 # ----------------------------------------
-FROM composer:2 AS composer_installer
+FROM composer:2-php8.4 AS composer_installer
 
 # Atur direktori kerja di dalam container
 WORKDIR /var/www/html
